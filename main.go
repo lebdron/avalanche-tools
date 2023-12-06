@@ -20,6 +20,7 @@ import (
 
 	"github.com/ava-labs/avalanche-network-runner/network"
 	"github.com/ava-labs/avalanche-network-runner/utils"
+	"github.com/ava-labs/avalanchego/genesis"
 	"github.com/ava-labs/avalanchego/ids"
 	"github.com/ava-labs/avalanchego/utils/constants"
 )
@@ -178,6 +179,41 @@ func main() {
 		cChainBalances,
 		genesisVdrs,
 	)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	// Enable upgrades
+	var genesisConfig genesis.UnparsedConfig
+	err = json.Unmarshal(genesisBytes, &genesisConfig)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	var cChainConfig map[string]interface{}
+	err = json.Unmarshal([]byte(genesisConfig.CChainGenesis), &cChainConfig)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	blockConfig := cChainConfig["config"].(map[string]interface{})
+	blockConfig["apricotPhase3BlockTimestamp"] = 0
+	blockConfig["apricotPhase4BlockTimestamp"] = 0
+	blockConfig["apricotPhase5BlockTimestamp"] = 0
+	blockConfig["apricotPhasePre6BlockTimestamp"] = 0
+	blockConfig["apricotPhase6BlockTimestamp"] = 0
+	blockConfig["apricotPhasePost6BlockTimestamp"] = 0
+	blockConfig["banffBlockTimestamp"] = 0
+	blockConfig["cortinaBlockTimestamp"] = 0
+	cChainConfig["config"] = blockConfig
+	cChainConfigBytes, err := json.Marshal(cChainConfig)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	genesisConfig.CChainGenesis = string(cChainConfigBytes)
+	genesisBytes, err = json.Marshal(genesisConfig)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
