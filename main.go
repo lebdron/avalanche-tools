@@ -33,7 +33,7 @@ type Config struct {
 	HttpPort                  uint   `json:"http-port"`
 	StakingTlsCertFileContent []byte `json:"staking-tls-cert-file-content"`
 	StakingTlsKeyFileContent  []byte `json:"staking-tls-key-file-content"`
-	GenesisContent            []byte `json:"genesis-content"`
+	GenesisFileContent        []byte `json:"genesis-file-content"`
 	BootstrapIds              string `json:"bootstrap-ids"`
 	BootstrapIps              string `json:"bootstrap-ips"`
 	LogLevel                  string `json:"log-level,omitempty"`
@@ -100,10 +100,10 @@ func main() {
 	networkID := uint32(1337)
 	baseConfig := Config{
 		NetworkId: fmt.Sprintf("network-%d", networkID),
-		//LogLevel:  "debug",
+		LogLevel:  "debug",
 	}
 	cConfig := CConfig{
-		//LogLevel: "trace",
+		LogLevel: "trace",
 	}
 
 	rand := rand.New(rand.NewSource(0))
@@ -230,7 +230,7 @@ func main() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		config.GenesisContent = genesisBytes
+		config.GenesisFileContent = genesisBytes
 		configJson, err := json.Marshal(config)
 		if err != nil {
 			fmt.Println(err)
