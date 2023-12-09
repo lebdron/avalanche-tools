@@ -100,10 +100,10 @@ func main() {
 	networkID := uint32(1337)
 	baseConfig := Config{
 		NetworkId: fmt.Sprintf("network-%d", networkID),
-		LogLevel:  "debug",
+		// LogLevel:  "debug",
 	}
 	cConfig := CConfig{
-		LogLevel: "trace",
+		// LogLevel: "trace",
 	}
 
 	rand := rand.New(rand.NewSource(0))
