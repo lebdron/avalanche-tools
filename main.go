@@ -23,6 +23,7 @@ import (
 	"github.com/ava-labs/avalanchego/genesis"
 	"github.com/ava-labs/avalanchego/ids"
 	"github.com/ava-labs/avalanchego/utils/constants"
+	coreth_params "github.com/ava-labs/coreth/params"
 	blst "github.com/supranational/blst/bindings/go"
 )
 
@@ -220,6 +221,9 @@ func main() {
 		}
 	}
 	cChainConfig["alloc"] = cChainAllocs
+	altConfig := *coreth_params.TestApricotPhase4Config
+	altConfig.ChainID = coreth_params.AvalancheLocalChainID
+	cChainConfig["config"] = altConfig
 
 	cChainConfigBytes, err := json.Marshal(cChainConfig)
 	if err != nil {
