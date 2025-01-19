@@ -22,6 +22,7 @@ import (
 	"github.com/ava-labs/avalanche-network-runner/utils"
 	"github.com/ava-labs/avalanchego/genesis"
 	"github.com/ava-labs/avalanchego/ids"
+	"github.com/ava-labs/avalanchego/upgrade/upgradetest"
 	"github.com/ava-labs/avalanchego/utils/constants"
 	coreth_params "github.com/ava-labs/coreth/params"
 	blst "github.com/supranational/blst/bindings/go"
@@ -37,6 +38,7 @@ type Config struct {
 	StakingTlsKeyFileContent    []byte `json:"staking-tls-key-file-content"`
 	StakingSignerKeyFileContent []byte `json:"staking-signer-key-file-content"`
 	GenesisFileContent          []byte `json:"genesis-file-content"`
+	UpgradeFileContent          []byte `json:"upgrade-file-content"`
 	BootstrapIds                string `json:"bootstrap-ids"`
 	BootstrapIps                string `json:"bootstrap-ips"`
 	LogLevel                    string `json:"log-level,omitempty"`
@@ -236,6 +238,11 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	upgradeBytes, err := json.Marshal(upgradetest.GetConfig(upgradetest.ApricotPhase4))
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
 	for i, config := range configs {
 		dir := fmt.Sprintf("%s/n%d/.%s", netroot, i, constants.AppName)
@@ -249,6 +256,7 @@ func main() {
 			os.Exit(1)
 		}
 		config.GenesisFileContent = genesisBytes
+		config.UpgradeFileContent = upgradeBytes
 		configJson, err := json.Marshal(config)
 		if err != nil {
 			fmt.Println(err)
